@@ -61,7 +61,14 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Marvel specific colors
+				'deadpool-red': 'hsl(var(--deadpool-red))',
+				'deadpool-black': 'hsl(var(--deadpool-black))',
+				'wolverine-yellow': 'hsl(var(--wolverine-yellow))',
+				'wolverine-blue': 'hsl(var(--wolverine-blue))',
+				'marvel-energy': 'hsl(var(--marvel-energy))',
+				'singularity-purple': 'hsl(var(--singularity-purple))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,11 +91,58 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'marvel-glow': {
+					'0%, 100%': {
+						'box-shadow': '0 0 20px hsl(var(--primary) / 0.3)'
+					},
+					'50%': {
+						'box-shadow': '0 0 40px hsl(var(--primary) / 0.6), 0 0 60px hsl(var(--marvel-energy) / 0.4)'
+					}
+				},
+				'hero-bounce': {
+					'0%, 100%': {
+						transform: 'translateY(0) scale(1)'
+					},
+					'50%': {
+						transform: 'translateY(-10px) scale(1.02)'
+					}
+				},
+				'energy-pulse': {
+					'0%, 100%': {
+						opacity: '1',
+						transform: 'scale(1)'
+					},
+					'50%': {
+						opacity: '0.7',
+						transform: 'scale(1.1)'
+					}
+				},
+				'float': {
+					'0%, 100%': {
+						transform: 'translateY(0px) rotate(0deg)'
+					},
+					'33%': {
+						transform: 'translateY(-20px) rotate(2deg)'
+					},
+					'66%': {
+						transform: 'translateY(-10px) rotate(-1deg)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'marvel-glow': 'marvel-glow 3s ease-in-out infinite',
+				'hero-bounce': 'hero-bounce 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite',
+				'energy-pulse': 'energy-pulse 4s ease-in-out infinite',
+				'float': 'float 6s ease-in-out infinite'
+			},
+			boxShadow: {
+				'marvel': 'var(--shadow-marvel)',
+				'glow': 'var(--shadow-glow)',
+				'deadpool': 'var(--shadow-deadpool)',
+				'wolverine': 'var(--shadow-wolverine)'
 			}
 		}
 	},
