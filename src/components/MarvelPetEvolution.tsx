@@ -12,6 +12,7 @@ import { MiniGame } from './MiniGame';
 import { AchievementNotification } from './AchievementNotification';
 import { EmotionFace } from './EmotionFace';
 import { StatusText } from './StatusText';
+import { BonusVirtualPet } from './BonusVirtualPet';
 import { usePetGame } from '../hooks/usePetGame';
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
 import { usePerformanceMonitor } from '../hooks/usePerformanceMonitor';
@@ -21,6 +22,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 export const MarvelPetEvolution = () => {
   const [selectedCharacter, setSelectedCharacter] = useState<'deadpool' | 'wolverine' | null>(null);
   const [gameStarted, setGameStarted] = useState(false);
+  const [showBonusPet, setShowBonusPet] = useState(false);
   const [showLaserGame, setShowLaserGame] = useState(false);
   const [showMiniGame, setShowMiniGame] = useState(false);
   const [showHearts, setShowHearts] = useState(false);
@@ -71,9 +73,18 @@ export const MarvelPetEvolution = () => {
     setGameStarted(true);
   };
 
+  const handleBonusSelection = () => {
+    setShowBonusPet(true);
+  };
+
+  const handleBackFromBonus = () => {
+    setShowBonusPet(false);
+  };
+
   const handleRestart = () => {
     setSelectedCharacter(null);
     setGameStarted(false);
+    setShowBonusPet(false);
     setShowLaserGame(false);
     setShowMiniGame(false);
     setShowHearts(false);
@@ -139,6 +150,11 @@ export const MarvelPetEvolution = () => {
     return Math.max(0, nextTime - petState.age);
   };
 
+  // Show bonus pet if selected
+  if (showBonusPet) {
+    return <BonusVirtualPet onBack={handleBackFromBonus} />;
+  }
+
   // Show games if active
   if (showLaserGame) {
     return (
@@ -160,7 +176,12 @@ export const MarvelPetEvolution = () => {
   }
 
   if (!gameStarted || !selectedCharacter) {
-    return <CharacterSelection onSelectCharacter={handleCharacterSelection} />;
+    return (
+      <CharacterSelection 
+        onSelectCharacter={handleCharacterSelection} 
+        onSelectBonus={handleBonusSelection}
+      />
+    );
   }
 
   if (!petState.isAlive) {
