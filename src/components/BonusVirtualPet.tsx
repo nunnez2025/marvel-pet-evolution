@@ -37,7 +37,7 @@ interface BonusVirtualPetProps {
 
 export const BonusVirtualPet = ({ onBack }: BonusVirtualPetProps) => {
   const [petState, setPetState] = useState<PetState>(INITIAL_PET_STATE);
-  const [currentScreen, setCurrentScreen] = useState<'home' | 'settings' | 'laser-game'>('home');
+  const [currentScreen, setCurrentScreen] = useState<'home' | 'laser-game'>('home');
   const [currentMessage, setCurrentMessage] = useState('🌱 Olá... acabei de acordar... estou feliz que você está aqui! 💖');
   const [laserGame, setLaserGame] = useState({ active: false, score: 0, timeLeft: 30 });
   const [laserPosition, setLaserPosition] = useState({ x: 50, y: 50 });
@@ -382,113 +382,119 @@ export const BonusVirtualPet = ({ onBack }: BonusVirtualPetProps) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-100 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-4">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6 bg-white/80 backdrop-blur-sm rounded-xl p-4">
-        <Button onClick={onBack} variant="outline" size="sm">
+      <div className="flex items-center justify-between mb-6 bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-lg">
+        <Button onClick={onBack} variant="outline" size="sm" className="flex items-center gap-2">
           ← Voltar ao Marvel
         </Button>
-        <h2 className="text-lg font-bold text-center flex-1">🐾 Pet Virtual Clássico</h2>
-        <Button 
-          onClick={() => setCurrentScreen(currentScreen === 'settings' ? 'home' : 'settings')}
-          variant="outline" 
-          size="sm"
-        >
-          {currentScreen === 'settings' ? 'Home' : 'Config'}
-        </Button>
+        <h2 className="text-lg font-bold text-center flex-1 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          🐾 Pet Virtual Clássico
+        </h2>
+        <div className="w-20"></div> {/* Spacer for symmetry */}
       </div>
 
-      {currentScreen === 'home' && (
-        <div className="max-w-md mx-auto space-y-6">
-          {/* Pet Display */}
-          <div className="relative">
-            <div className="w-full aspect-square rounded-full overflow-hidden shadow-lg relative bg-white">
-              <img 
-                src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgju3nFnl_Xb8LHGVy5I-Srg2QXNufW76mVYzFPnlP_l_R0lOXvY1kSBGqTBG7Vo3RbmPd27lDDYSOlE0tUxMdoPYLS6bbZhbD_V13ABD37YtLUEZ8OglXgvyXbyy22drBmnAwkvpzIkjSXirxHExoOQH8N6tIYSRxu-PoWsrYigaC8jFZIHjj7kXSHMAFC/s1600/IMG_5793.jpeg"
-                alt="Pet" 
-                className={`w-full h-full object-cover cursor-pointer transition-all hover:scale-105 ${petStatus.class}`}
-                onClick={cliquePet}
-              />
-              {showEmotion && (
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-6xl animate-bounce pointer-events-none z-10">
-                  {showEmotion}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Status Bars */}
-          <div className="space-y-3 bg-white/80 backdrop-blur-sm rounded-xl p-4">
-            {[
-              { label: '🍔 Fome', value: petState.fome, key: 'fome' },
-              { label: '😊 Felicidade', value: petState.felicidade, key: 'felicidade' },
-              { label: '⚡ Energia', value: petState.energia, key: 'energia' },
-              { label: '❤️ Saúde', value: petState.saude, key: 'saude' }
-            ].map(({ label, value, key }) => (
-              <div key={key}>
-                <p className="text-sm mb-1 text-gray-600 flex justify-between">
-                  <span>{label}</span>
-                  <span>{value}%</span>
-                </p>
-                <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                  <div 
-                    className={`h-full transition-all duration-300 ${getProgressClass(value)}`}
-                    style={{ width: `${value}%` }}
-                  />
-                </div>
+      <div className="max-w-md mx-auto space-y-6">
+        {/* Pet Display */}
+        <div className="relative">
+          <div className="w-full aspect-square rounded-full overflow-hidden shadow-2xl relative bg-gradient-to-br from-white to-gray-100 ring-4 ring-white/50">
+            <img 
+              src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgju3nFnl_Xb8LHGVy5I-Srg2QXNufW76mVYzFPnlP_l_R0lOXvY1kSBGqTBG7Vo3RbmPd27lDDYSOlE0tUxMdoPYLS6bbZhbD_V13ABD37YtLUEZ8OglXgvyXbyy22drBmnAwkvpzIkjSXirxHExoOQH8N6tIYSRxu-PoWsrYigaC8jFZIHjj7kXSHMAFC/s1600/IMG_5793.jpeg"
+              alt="Pet" 
+              className={`w-full h-full object-cover cursor-pointer transition-all duration-300 hover:scale-105 ${petStatus.class}`}
+              onClick={cliquePet}
+            />
+            {showEmotion && (
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-6xl animate-bounce pointer-events-none z-10">
+                {showEmotion}
               </div>
-            ))}
+            )}
           </div>
+        </div>
 
-          {/* Pet Speech */}
-          <div className="bg-gray-100 border-2 border-gray-300 rounded-2xl p-4 relative">
-            <p className="text-gray-800 font-medium">{currentMessage}</p>
-            <div className="absolute bottom-[-10px] left-8 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[10px] border-t-gray-300" />
+        {/* Status Bars */}
+        <div className="space-y-3 bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
+          {[
+            { label: '🍔 Fome', value: petState.fome, key: 'fome', color: 'from-orange-400 to-red-500' },
+            { label: '😊 Felicidade', value: petState.felicidade, key: 'felicidade', color: 'from-pink-400 to-purple-500' },
+            { label: '⚡ Energia', value: petState.energia, key: 'energia', color: 'from-yellow-400 to-orange-500' },
+            { label: '❤️ Saúde', value: petState.saude, key: 'saude', color: 'from-green-400 to-emerald-500' }
+          ].map(({ label, value, key, color }) => (
+            <div key={key}>
+              <p className="text-sm mb-2 text-gray-700 flex justify-between font-medium">
+                <span>{label}</span>
+                <span className="font-bold">{value}%</span>
+              </p>
+              <div className="h-3 bg-gray-200 rounded-full overflow-hidden shadow-inner">
+                <div 
+                  className={`h-full transition-all duration-500 bg-gradient-to-r ${color} ${value < 30 ? 'animate-pulse' : ''}`}
+                  style={{ width: `${value}%` }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Pet Speech */}
+        <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-5 relative shadow-lg">
+          <p className="text-gray-800 font-medium text-center">{currentMessage}</p>
+          <div className="absolute bottom-[-12px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-t-[12px] border-t-gray-200" />
+        </div>
+
+        {/* Status Text */}
+        <div className="text-center">
+          <div className="inline-flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg">
+            <span className="text-2xl">{petStatus.emotion}</span>
+            <span className="text-lg font-bold text-gray-700">{petStatus.status}</span>
           </div>
+        </div>
 
-          {/* Status Text */}
-          <p className="text-center text-lg font-bold text-gray-700">
-            {petStatus.status} {petStatus.emotion}
-          </p>
-
-          {/* Action Buttons */}
-          <div className="grid grid-cols-2 gap-3">
-            <Button onClick={alimentarPet} className="bg-blue-500 hover:bg-blue-600">
-              🍔 Alimentar
-            </Button>
-            <Button onClick={brincarComPet} className="bg-green-500 hover:bg-green-600">
-              🎮 Brincar
-            </Button>
-            <Button onClick={curarPet} className="bg-red-500 hover:bg-red-600">
-              💊 Curar
-            </Button>
-            <Button onClick={petDormir} className="bg-purple-500 hover:bg-purple-600">
-              😴 Dormir
-            </Button>
-          </div>
-
-          <Button 
-            onClick={iniciarJogoLaser} 
-            className="w-full bg-orange-500 hover:bg-orange-600"
-          >
-            🔴 Jogo Laser
+        {/* Action Buttons */}
+        <div className="grid grid-cols-2 gap-4">
+          <Button onClick={alimentarPet} className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-lg hover:shadow-xl transition-all duration-300">
+            🍔 Alimentar
+          </Button>
+          <Button onClick={brincarComPet} className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow-lg hover:shadow-xl transition-all duration-300">
+            🎮 Brincar
+          </Button>
+          <Button onClick={curarPet} className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-lg hover:shadow-xl transition-all duration-300">
+            💊 Curar
+          </Button>
+          <Button onClick={petDormir} className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300">
+            😴 Dormir
           </Button>
         </div>
-      )}
 
-      {currentScreen === 'settings' && (
-        <div className="max-w-md mx-auto space-y-6">
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4">
-            <h3 className="text-lg font-bold mb-4">📊 Estatísticas</h3>
-            <div className="space-y-2 text-sm">
-              <p><strong>Idade:</strong> {Math.floor(petState.idade)} horas</p>
-              <p><strong>Estágio:</strong> {petState.estagio}</p>
-              <p><strong>Cliques Totais:</strong> {petState.totalCliques}</p>
-              <p><strong>Recorde Laser:</strong> {petState.recordeLaser}</p>
+        <Button 
+          onClick={iniciarJogoLaser} 
+          className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 shadow-lg hover:shadow-xl transition-all duration-300 text-lg py-3"
+        >
+          🔴 Jogo Laser
+        </Button>
+
+        {/* Stats Display */}
+        <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
+          <h3 className="text-lg font-bold mb-4 text-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">📊 Estatísticas</h3>
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="text-center p-3 bg-gray-50 rounded-xl">
+              <div className="font-bold text-blue-600">{Math.floor(petState.idade)}h</div>
+              <div className="text-gray-600">Idade</div>
+            </div>
+            <div className="text-center p-3 bg-gray-50 rounded-xl">
+              <div className="font-bold text-purple-600 capitalize">{petState.estagio}</div>
+              <div className="text-gray-600">Estágio</div>
+            </div>
+            <div className="text-center p-3 bg-gray-50 rounded-xl">
+              <div className="font-bold text-green-600">{petState.totalCliques}</div>
+              <div className="text-gray-600">Cliques</div>
+            </div>
+            <div className="text-center p-3 bg-gray-50 rounded-xl">
+              <div className="font-bold text-orange-600">{petState.recordeLaser}</div>
+              <div className="text-gray-600">Recorde</div>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

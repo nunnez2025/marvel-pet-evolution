@@ -52,35 +52,43 @@ export const CharacterSelection = ({ onSelectCharacter, onSelectBonus }: Charact
           <p>🏆 Sistema de conquistas desbloqueáveis</p>
         </div>
 
-        {/* Botão Bônus */}
-        <div className="mt-12 pt-8 border-t border-gray-600/30">
+        {/* Botão Bônus - Flutuante e em destaque */}
+        <div className="fixed bottom-8 right-8 z-50">
           <div className="relative">
+            {/* Glow effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full blur-xl opacity-60 animate-pulse scale-110"></div>
+            
+            {/* Main button */}
             <Button
               onClick={onSelectBonus}
-              variant="outline"
               size="lg"
-              className="relative bg-gradient-to-r from-amber-500/20 to-yellow-500/20 border-amber-400/50 text-amber-300 hover:bg-amber-500/30 hover:border-amber-400 transition-all duration-300 animate-bounce overflow-hidden group"
+              className="relative bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 border-2 border-amber-300 text-white font-bold shadow-2xl hover:shadow-amber-500/50 transition-all duration-300 animate-bounce hover:animate-none hover:scale-105 rounded-full px-6 py-4"
             >
-              <span className="relative z-10 flex items-center gap-2">
-                ⭐ BÔNUS: Pet Virtual Clássico ⭐
+              <span className="relative z-10 flex items-center gap-2 text-lg">
+                🎮 Pet Bônus
               </span>
+              
               {/* Shimmer effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-1000 rounded-full" />
             </Button>
             
             {/* Floating sparkles around the button */}
-            <div className="absolute -top-2 -left-2 text-yellow-400 animate-pulse" style={{ animationDelay: '0s' }}>✨</div>
-            <div className="absolute -top-3 -right-3 text-amber-400 animate-pulse" style={{ animationDelay: '0.5s' }}>⭐</div>
-            <div className="absolute -bottom-2 -left-3 text-yellow-500 animate-pulse" style={{ animationDelay: '1s' }}>💫</div>
-            <div className="absolute -bottom-3 -right-2 text-amber-300 animate-pulse" style={{ animationDelay: '1.5s' }}>✨</div>
+            <div className="absolute -top-2 -left-2 text-yellow-300 animate-ping" style={{ animationDelay: '0s' }}>✨</div>
+            <div className="absolute -top-3 -right-3 text-amber-300 animate-ping" style={{ animationDelay: '0.5s' }}>⭐</div>
+            <div className="absolute -bottom-2 -left-3 text-yellow-400 animate-ping" style={{ animationDelay: '1s' }}>💫</div>
+            <div className="absolute -bottom-3 -right-2 text-amber-400 animate-ping" style={{ animationDelay: '1.5s' }}>✨</div>
+            
+            {/* Pulse rings */}
+            <div className="absolute inset-0 rounded-full border-2 border-amber-300/50 animate-ping" style={{ animationDelay: '0.2s' }}></div>
+            <div className="absolute inset-0 rounded-full border-2 border-yellow-300/30 animate-ping scale-125" style={{ animationDelay: '0.8s' }}></div>
           </div>
           
-          <p className="text-amber-400/70 text-xs mt-3 animate-pulse">
-            🎮 Experimente nosso pet virtual tradicional com mecânicas clássicas!
-          </p>
-          <p className="text-amber-500/60 text-xs mt-1">
-            📱 Interface simples • 🎯 Jogo do laser • 💖 Cuidados básicos
-          </p>
+          {/* Tooltip */}
+          <div className="absolute bottom-full right-0 mb-2 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+            <div className="bg-black/80 text-white text-xs rounded-lg px-3 py-2 whitespace-nowrap">
+              🎮 Pet Virtual Clássico
+            </div>
+          </div>
         </div>
       </div>
     </div>
