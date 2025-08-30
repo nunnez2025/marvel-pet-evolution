@@ -10,6 +10,7 @@ import { FloatingHearts } from './FloatingHearts';
 import { LaserGame } from './LaserGame';
 import { MiniGame } from './MiniGame';
 import { AchievementNotification } from './AchievementNotification';
+import { PetStatusDisplay } from './PetStatusDisplay';
 import { EmotionFace } from './EmotionFace';
 import { StatusText } from './StatusText';
 import { BonusVirtualPet } from './BonusVirtualPet';
@@ -124,13 +125,14 @@ export const MarvelPetEvolution = () => {
   };
 
   const handleMiniGameEnd = (score: number) => {
-    let rating = 'Try Again';
-    if (score >= 20) rating = 'Amazing!';
-    else if (score >= 15) rating = 'Great!';
-    else if (score >= 10) rating = 'Good!';
-    else if (score >= 5) rating = 'Not Bad!';
-    
-    miniGame.updatePetFromMiniGame(score * 6, score * 4, score * 1.5);
+    setShowMiniGame(false);
+    // Simple score feedback  
+    const bonusHunger = Math.min(score * 2, 20);
+    const bonusHappiness = Math.min(score * 3, 30); 
+    miniGame.updatePetFromMiniGame(bonusHunger, bonusHappiness, score);
+  };
+
+  const handleMiniGameStop = () => {
     setShowMiniGame(false);
   };
 
@@ -168,9 +170,13 @@ export const MarvelPetEvolution = () => {
   if (showMiniGame) {
     return (
       <MiniGame
-        onEnd={handleMiniGameEnd}
-        onUpdatePet={miniGame.updatePetFromMiniGame}
         character={selectedCharacter}
+        onEnd={handleMiniGameEnd}
+        onStop={handleMiniGameStop}
+        onUpdatePet={(hunger, happiness, xp) => {
+          // Use miniGame methods to update pet stats
+          miniGame.updatePetFromMiniGame(hunger, happiness, xp);
+        }}
       />
     );
   }
@@ -254,8 +260,8 @@ export const MarvelPetEvolution = () => {
               />
             </div>
 
-            {/* Pet Display with organized animations */}
-            <div className="flex justify-center relative mb-8">
+            {/* Pet Display organized */}
+            <div className="flex justify-center relative mb-6">
               <div className="relative w-64 h-64 mx-auto">
                 {/* Main pet container with circular boundary */}
                 <div className="relative w-full h-full rounded-full overflow-hidden flex items-center justify-center z-10">
@@ -273,20 +279,20 @@ export const MarvelPetEvolution = () => {
                   isActive={showHearts} 
                   onAnimationComplete={() => setShowHearts(false)}
                 />
-                
-                {/* Emotion face positioned above pet */}
-                <EmotionFace 
-                  mood={petState.mood} 
-                  trigger={showEmotion}
-                />
               </div>
             </div>
 
-            {/* Status Text */}
-            <div className="flex justify-center">
-              <StatusText mood={petState.mood} />
+            {/* Pet Status Display - below the pet */}
+            <div className="flex justify-center mb-6">
+              <PetStatusDisplay 
+                mood={petState.mood}
+                character={selectedCharacter}
+                evolutionStage={petState.evolutionStage}
+              />
             </div>
 
+            {/* Status Text - removed */}
+            
             {/* Pet Speech */}
             <div className="flex justify-center">
               <PetSpeech

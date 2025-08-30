@@ -5,6 +5,7 @@ interface MiniGameProps {
   onEnd: (score: number) => void;
   onUpdatePet?: (hunger: number, happiness: number, xp: number) => void;
   character: 'deadpool' | 'wolverine';
+  onStop?: () => void; // Add stop function
 }
 
 interface FoodItem {
@@ -14,7 +15,7 @@ interface FoodItem {
   y: number;
 }
 
-export const MiniGame = ({ onEnd, onUpdatePet, character }: MiniGameProps) => {
+export const MiniGame = ({ onEnd, onUpdatePet, character, onStop }: MiniGameProps) => {
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(15);
   const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
@@ -23,7 +24,7 @@ export const MiniGame = ({ onEnd, onUpdatePet, character }: MiniGameProps) => {
   const timerRef = useRef<NodeJS.Timeout>();
   const spawnRef = useRef<NodeJS.Timeout>();
   
-  const foodEmojis = ['🍔', '🍕', '🌮', '🍟', '🥓', '🍳', '🥪', '🌭', '🍗', '🥨'];
+  const foodEmojis = ['🍔']; // Only hamburgers
 
   const spawnFood = useCallback(() => {
     if (!gameContainerRef.current || timeLeft <= 0) return;
@@ -33,7 +34,7 @@ export const MiniGame = ({ onEnd, onUpdatePet, character }: MiniGameProps) => {
     
     const newFood: FoodItem = {
       id: Date.now() + Math.random(),
-      emoji: foodEmojis[Math.floor(Math.random() * foodEmojis.length)],
+      emoji: '🍔', // Always hamburger
       x: randomX,
       y: -50
     };
@@ -43,7 +44,7 @@ export const MiniGame = ({ onEnd, onUpdatePet, character }: MiniGameProps) => {
     // Remove food after falling
     setTimeout(() => {
       setFoodItems(prev => prev.filter(food => food.id !== newFood.id));
-    }, 6000);
+    }, 4000); // Faster falling
   }, [timeLeft]);
 
   const catchFood = useCallback((foodId: number, x: number, y: number) => {
@@ -129,15 +130,15 @@ export const MiniGame = ({ onEnd, onUpdatePet, character }: MiniGameProps) => {
   return (
     <div className="fixed inset-0 z-50 bg-black/90 flex flex-col items-center justify-center p-6">
       <h2 className="text-4xl font-bold text-white mb-4 animate-marvel-glow">
-        🍔 Food Rain! 🍔
+        🍔 Chuva de Hambúrgueres! 🍔
       </h2>
       <p className="text-xl text-white mb-2">
         {character === 'deadpool' 
-          ? "Food rain! This is like that scene from Cloudy with a Chance of Meatballs!" 
-          : "Time to hunt, bub! Let's catch some grub!"}
+          ? "Chuva de hambúrgueres! Melhor que chuva de balas!" 
+          : "Hora de caçar, parceiro! Vamos pegar uns hambúrgueres!"}
       </p>
       <p className="text-2xl font-bold text-accent mb-4">
-        Score: {score} | Time: {timeLeft}s
+        Score: {score} | Tempo: {timeLeft}s
       </p>
       
       <div 
@@ -147,7 +148,7 @@ export const MiniGame = ({ onEnd, onUpdatePet, character }: MiniGameProps) => {
         {foodItems.map((food) => (
           <div
             key={food.id}
-            className="absolute text-4xl cursor-pointer hover:scale-110 transition-transform z-10 animate-fall"
+            className="absolute text-5xl cursor-pointer hover:scale-110 transition-transform z-10 animate-fall"
             style={{
               left: food.x,
               top: food.y,
@@ -158,6 +159,14 @@ export const MiniGame = ({ onEnd, onUpdatePet, character }: MiniGameProps) => {
           </div>
         ))}
       </div>
+      
+      {/* Stop Game Button */}
+      <button 
+        onClick={onStop}
+        className="mt-6 bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-full font-bold transition-colors"
+      >
+        Parar Jogo
+      </button>
     </div>
   );
 };

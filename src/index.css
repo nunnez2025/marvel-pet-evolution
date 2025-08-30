@@ -352,6 +352,22 @@ All colors MUST be HSL.
   }
 }
 
+/* Food falling animation for mini-game */
+.animate-fall {
+  animation: fallDown 4s linear forwards;
+}
+
+@keyframes fallDown {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(400px) rotate(360deg);
+    opacity: 0.8;
+  }
+}
+
 /* Food Rain Animation */
 @keyframes fall {
   0% {
