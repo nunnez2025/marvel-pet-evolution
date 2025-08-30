@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { CharacterSelection } from './CharacterSelection';
-import { PetDisplay } from './PetDisplay';
+import { AdvancedPetDisplay } from './AdvancedPetDisplay';
 import { StatusBars } from './StatusBars';
 import { ActionButtons } from './ActionButtons';
 import { EvolutionProgress } from './EvolutionProgress';
@@ -9,6 +9,7 @@ import { GameStats } from './GameStats';
 import { FloatingHearts } from './FloatingHearts';
 import { LaserGame } from './LaserGame';
 import { MiniGame } from './MiniGame';
+import { AchievementNotification } from './AchievementNotification';
 import { usePetGame } from '../hooks/usePetGame';
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
 import { usePerformanceMonitor } from '../hooks/usePerformanceMonitor';
@@ -22,10 +23,35 @@ export const MarvelPetEvolution = () => {
   const [showMiniGame, setShowMiniGame] = useState(false);
   const [showHearts, setShowHearts] = useState(false);
   const [currentTab, setCurrentTab] = useState('game');
+  const [currentAchievement, setCurrentAchievement] = useState<{ title: string; icon: string } | null>(null);
+  const [lastAchievementCount, setLastAchievementCount] = useState(0);
   
   const petGame = usePetGame(selectedCharacter!);
   const { petState, actions, laserGame, miniGame, utils } = petGame;
   
+  // Performance monitoring
+  usePerformanceMonitor();
+
+  // Listen for new achievements
+  if (petState.achievements.length > lastAchievementCount) {
+    const newAchievement = petState.achievements[petState.achievements.length - 1];
+    setCurrentAchievement({ 
+      title: newAchievement, 
+      icon: getAchievementIcon(newAchievement) 
+    });
+    setLastAchievementCount(petState.achievements.length);
+  }
+
+  function getAchievementIcon(title: string): string {
+    if (title.includes('Click') || title.includes('Clique')) return '👆';
+    if (title.includes('Level') || title.includes('Nível')) return '⚡';
+    if (title.includes('Evolution') || title.includes('Evolução')) return '🌱';
+    if (title.includes('Laser')) return '🎯';
+    if (title.includes('Master')) return '🏆';
+    if (title.includes('Legend')) return '🌟';
+    return '🏅';
+  }
+
   // Keyboard shortcuts
   useKeyboardShortcuts({
     onFeed: actions.feedPet,
@@ -48,6 +74,8 @@ export const MarvelPetEvolution = () => {
     setShowLaserGame(false);
     setShowMiniGame(false);
     setShowHearts(false);
+    setCurrentAchievement(null);
+    setLastAchievementCount(0);
     utils.resetPet();
   };
 
@@ -67,7 +95,6 @@ export const MarvelPetEvolution = () => {
       `${score} points! Not bad for a human! Maximum effort!` : 
       `${score} hits, bub. Your reflexes are getting sharper!`;
     
-    utils.getRandomSpeech('happy');
     setShowLaserGame(false);
   };
 
@@ -83,7 +110,6 @@ export const MarvelPetEvolution = () => {
     else if (score >= 10) rating = 'Good!';
     else if (score >= 5) rating = 'Not Bad!';
     
-    const message = `Caught ${score} items! ${rating} ${score > 15 ? 'Excellent reflexes!' : 'Keep practicing!'}`;
     miniGame.updatePetFromMiniGame(score * 6, score * 4, score * 1.5);
     setShowMiniGame(false);
   };
@@ -153,9 +179,15 @@ export const MarvelPetEvolution = () => {
 
   return (
     <div className={`min-h-screen ${
-      selectedCharacter === 'deadpool' ? 'gradient-deadpool' : 'gradient-wolverine'
+      selectedCharacter === 'deadpool' ? 'deadpool-bg' : 'wolverine-bg'
     } p-4`}>
       <div className="max-w-4xl mx-auto">
+        {/* Achievement Notification */}
+        <AchievementNotification 
+          achievement={currentAchievement}
+          onHide={() => setCurrentAchievement(null)}
+        />
+
         {/* Header */}
         <div className="text-center mb-6">
           <h1 className="text-4xl font-bold text-white mb-2 animate-marvel-glow">
@@ -171,7 +203,7 @@ export const MarvelPetEvolution = () => {
           </Button>
         </div>
 
-        <Tabs defaultValue="game" className="w-full">
+        <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 bg-black/20 backdrop-blur-sm">
             <TabsTrigger value="game" className="text-white data-[state=active]:bg-white/20">
               🎮 Jogo
@@ -195,10 +227,11 @@ export const MarvelPetEvolution = () => {
             {/* Pet Display with Floating Hearts */}
             <div className="flex justify-center relative">
               <div className="relative">
-                <PetDisplay
+                <AdvancedPetDisplay
                   character={selectedCharacter}
                   mood={petState.mood}
                   evolutionStage={petState.evolutionStage}
+                  age={petState.age}
                   onClick={handlePetClick}
                 />
                 <FloatingHearts 
@@ -234,6 +267,9 @@ export const MarvelPetEvolution = () => {
                 onHeal={actions.healPet}
                 onSleep={actions.putPetToSleep}
                 onTrain={actions.trainPet}
+                onTreat={actions.giveTreat}
+                onLaserGame={handleLaserGameStart}
+                onMiniGame={handleMiniGameStart}
               />
             </div>
           </TabsContent>
