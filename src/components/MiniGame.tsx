@@ -13,12 +13,14 @@ interface FoodItem {
   emoji: string;
   x: number;
   y: number;
+  speed: number; // Individual speed for each hamburger
 }
 
 export const MiniGame = ({ onEnd, onUpdatePet, character, onStop }: MiniGameProps) => {
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(15);
   const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
+  const [gameSpeed, setGameSpeed] = useState(1); // Speed multiplier
   
   const gameContainerRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<NodeJS.Timeout>();
@@ -36,19 +38,27 @@ export const MiniGame = ({ onEnd, onUpdatePet, character, onStop }: MiniGameProp
       id: Date.now() + Math.random(),
       emoji: '🍔', // Always hamburger
       x: randomX,
-      y: -50
+      y: -50,
+      speed: gameSpeed // Current game speed
     };
     
     setFoodItems(prev => [...prev, newFood]);
     
-    // Remove food after falling
+    // Remove food after falling (adjust time based on speed)
+    const fallTime = 8000 / gameSpeed; // Base time divided by speed
     setTimeout(() => {
       setFoodItems(prev => prev.filter(food => food.id !== newFood.id));
-    }, 4000); // Faster falling
+    }, fallTime);
   }, [timeLeft]);
 
   const catchFood = useCallback((foodId: number, x: number, y: number) => {
-    setScore(prev => prev + 1);
+    setScore(prev => {
+      const newScore = prev + 1;
+      // Increase speed every 3 hamburgers caught, max 3x speed
+      const newSpeed = Math.min(3, 1 + Math.floor(newScore / 3) * 0.3);
+      setGameSpeed(newSpeed);
+      return newScore;
+    });
     setFoodItems(prev => prev.filter(food => food.id !== foodId));
     
     // Create catch effect
@@ -138,7 +148,7 @@ export const MiniGame = ({ onEnd, onUpdatePet, character, onStop }: MiniGameProp
           : "Hora de caçar, parceiro! Vamos pegar uns hambúrgueres!"}
       </p>
       <p className="text-2xl font-bold text-accent mb-4">
-        Score: {score} | Tempo: {timeLeft}s
+        Score: {score} | Tempo: {timeLeft}s | Velocidade: {gameSpeed.toFixed(1)}x
       </p>
       
       <div 
@@ -148,10 +158,11 @@ export const MiniGame = ({ onEnd, onUpdatePet, character, onStop }: MiniGameProp
         {foodItems.map((food) => (
           <div
             key={food.id}
-            className="absolute text-5xl cursor-pointer hover:scale-110 transition-transform z-10 animate-fall"
+            className="absolute text-5xl cursor-pointer hover:scale-110 transition-transform z-10"
             style={{
               left: food.x,
               top: food.y,
+              animation: `fallDown ${8 / food.speed}s linear forwards`
             }}
             onClick={() => catchFood(food.id, food.x, food.y)}
           >
