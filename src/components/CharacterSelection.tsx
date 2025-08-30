@@ -64,7 +64,7 @@ export const CharacterSelection = ({ onSelectCharacter, onSelectBonus }: Charact
               className="relative bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-bold shadow-lg hover:shadow-amber-500/50 transition-all duration-300 hover:scale-110 rounded-full px-4 py-2 text-sm border-2 border-amber-300/50"
             >
               <span className="relative z-10 flex items-center gap-2">
-                ⭐ Pet Bônus
+                ⭐ Shaula
               </span>
               
               {/* Shimmer effect */}
@@ -79,7 +79,7 @@ export const CharacterSelection = ({ onSelectCharacter, onSelectBonus }: Charact
         </div>
 
         <p className="text-amber-400/70 text-xs mt-2 text-center animate-pulse">
-          🎮 Pet virtual clássico com mecânicas tradicionais
+          ✨ Shaula - Pet virtual especial ✨
         </p>
       </div>
     </div>

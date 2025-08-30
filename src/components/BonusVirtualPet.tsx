@@ -382,14 +382,16 @@ export const BonusVirtualPet = ({ onBack }: BonusVirtualPetProps) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-800 to-black p-4">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6 bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-lg">
-        <Button onClick={onBack} variant="outline" size="sm" className="flex items-center gap-2">
+      <div className="flex items-center justify-between mb-6 bg-gray-800/90 backdrop-blur-sm rounded-2xl p-4 shadow-xl border border-gray-700">
+        <Button onClick={onBack} variant="outline" size="sm" className="flex items-center gap-2 border-gray-600 text-gray-300 hover:bg-gray-700">
           ← Voltar ao Marvel
         </Button>
-        <h2 className="text-lg font-bold text-center flex-1 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          🐾 Pet Virtual Clássico
+        <h2 className="text-lg font-bold text-center flex-1">
+          <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-pulse text-2xl font-extrabold tracking-wider">
+            ✨ Shaula ✨
+          </span>
         </h2>
         <div className="w-20"></div> {/* Spacer for symmetry */}
       </div>
@@ -397,7 +399,7 @@ export const BonusVirtualPet = ({ onBack }: BonusVirtualPetProps) => {
       <div className="max-w-md mx-auto space-y-6">
         {/* Pet Display */}
         <div className="relative">
-          <div className="w-full aspect-square rounded-full overflow-hidden shadow-2xl relative bg-gradient-to-br from-white to-gray-100 ring-4 ring-white/50">
+          <div className="w-full aspect-square rounded-full overflow-hidden shadow-2xl relative bg-gradient-to-br from-gray-700 to-gray-800 ring-4 ring-purple-500/50">
             <img 
               src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgju3nFnl_Xb8LHGVy5I-Srg2QXNufW76mVYzFPnlP_l_R0lOXvY1kSBGqTBG7Vo3RbmPd27lDDYSOlE0tUxMdoPYLS6bbZhbD_V13ABD37YtLUEZ8OglXgvyXbyy22drBmnAwkvpzIkjSXirxHExoOQH8N6tIYSRxu-PoWsrYigaC8jFZIHjj7kXSHMAFC/s1600/IMG_5793.jpeg"
               alt="Pet" 
@@ -413,7 +415,7 @@ export const BonusVirtualPet = ({ onBack }: BonusVirtualPetProps) => {
         </div>
 
         {/* Status Bars */}
-        <div className="space-y-3 bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
+        <div className="space-y-3 bg-gray-800/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-700">
           {[
             { label: '🍔 Fome', value: petState.fome, key: 'fome', color: 'from-orange-400 to-red-500' },
             { label: '😊 Felicidade', value: petState.felicidade, key: 'felicidade', color: 'from-pink-400 to-purple-500' },
@@ -421,11 +423,11 @@ export const BonusVirtualPet = ({ onBack }: BonusVirtualPetProps) => {
             { label: '❤️ Saúde', value: petState.saude, key: 'saude', color: 'from-green-400 to-emerald-500' }
           ].map(({ label, value, key, color }) => (
             <div key={key}>
-              <p className="text-sm mb-2 text-gray-700 flex justify-between font-medium">
+              <p className="text-sm mb-2 text-gray-300 flex justify-between font-medium">
                 <span>{label}</span>
-                <span className="font-bold">{value}%</span>
+                <span className="font-bold text-white">{value}%</span>
               </p>
-              <div className="h-3 bg-gray-200 rounded-full overflow-hidden shadow-inner">
+              <div className="h-3 bg-gray-700 rounded-full overflow-hidden shadow-inner">
                 <div 
                   className={`h-full transition-all duration-500 bg-gradient-to-r ${color} ${value < 30 ? 'animate-pulse' : ''}`}
                   style={{ width: `${value}%` }}
@@ -436,16 +438,16 @@ export const BonusVirtualPet = ({ onBack }: BonusVirtualPetProps) => {
         </div>
 
         {/* Pet Speech */}
-        <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-5 relative shadow-lg">
-          <p className="text-gray-800 font-medium text-center">{currentMessage}</p>
-          <div className="absolute bottom-[-12px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-t-[12px] border-t-gray-200" />
+        <div className="bg-gradient-to-br from-gray-700 to-gray-800 border-2 border-purple-500/50 rounded-3xl p-5 relative shadow-xl">
+          <p className="text-gray-100 font-medium text-center">{currentMessage}</p>
+          <div className="absolute bottom-[-12px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-t-[12px] border-t-purple-500/50" />
         </div>
 
         {/* Status Text */}
         <div className="text-center">
-          <div className="inline-flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg">
+          <div className="inline-flex items-center gap-2 bg-gray-800/90 backdrop-blur-sm rounded-full px-6 py-3 shadow-xl border border-gray-600">
             <span className="text-2xl">{petStatus.emotion}</span>
-            <span className="text-lg font-bold text-gray-700">{petStatus.status}</span>
+            <span className="text-lg font-bold text-gray-100">{petStatus.status}</span>
           </div>
         </div>
 
@@ -473,24 +475,26 @@ export const BonusVirtualPet = ({ onBack }: BonusVirtualPetProps) => {
         </Button>
 
         {/* Stats Display */}
-        <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
-          <h3 className="text-lg font-bold mb-4 text-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">📊 Estatísticas</h3>
+        <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-700">
+          <h3 className="text-lg font-bold mb-4 text-center">
+            <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">📊 Estatísticas</span>
+          </h3>
           <div className="grid grid-cols-2 gap-4 text-sm">
-            <div className="text-center p-3 bg-gray-50 rounded-xl">
-              <div className="font-bold text-blue-600">{Math.floor(petState.idade)}h</div>
-              <div className="text-gray-600">Idade</div>
+            <div className="text-center p-3 bg-gray-700/50 rounded-xl border border-gray-600">
+              <div className="font-bold text-blue-400">{Math.floor(petState.idade)}h</div>
+              <div className="text-gray-300">Idade</div>
             </div>
-            <div className="text-center p-3 bg-gray-50 rounded-xl">
-              <div className="font-bold text-purple-600 capitalize">{petState.estagio}</div>
-              <div className="text-gray-600">Estágio</div>
+            <div className="text-center p-3 bg-gray-700/50 rounded-xl border border-gray-600">
+              <div className="font-bold text-purple-400 capitalize">{petState.estagio}</div>
+              <div className="text-gray-300">Estágio</div>
             </div>
-            <div className="text-center p-3 bg-gray-50 rounded-xl">
-              <div className="font-bold text-green-600">{petState.totalCliques}</div>
-              <div className="text-gray-600">Cliques</div>
+            <div className="text-center p-3 bg-gray-700/50 rounded-xl border border-gray-600">
+              <div className="font-bold text-green-400">{petState.totalCliques}</div>
+              <div className="text-gray-300">Cliques</div>
             </div>
-            <div className="text-center p-3 bg-gray-50 rounded-xl">
-              <div className="font-bold text-orange-600">{petState.recordeLaser}</div>
-              <div className="text-gray-600">Recorde</div>
+            <div className="text-center p-3 bg-gray-700/50 rounded-xl border border-gray-600">
+              <div className="font-bold text-orange-400">{petState.recordeLaser}</div>
+              <div className="text-gray-300">Recorde</div>
             </div>
           </div>
         </div>
