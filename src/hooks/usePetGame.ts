@@ -39,10 +39,15 @@ const INITIAL_STATE: PetState = {
   miniGameActive: false
 };
 
-const EVOLUTION_TIMES = [2, 8, 20, 50, 100, 200, 300, Infinity]; // minutes to next stage
+const EVOLUTION_TIMES = [1, 4, 12, 30, 60, 120, 240, 480, Infinity]; // minutes to next stage (ovo, bebê, criança, teen, adulto, veterano, lendário, mítico, eterno)
 
 const SPEECH_MESSAGES = {
   deadpool: {
+    egg: [
+      "Posso sentir o máximo esforço crescendo dentro desta casca!",
+      "Ainda não nasci e já estou quebrando a quarta parede!",
+      "Este ovo está mais quentinho que uma chimichanga no microondas!"
+    ],
     birth: [
       "Hey aí! Deadpool na área! Preparado para máximo esforço?",
       "Quebrar a quarta parede nunca foi tão divertido!",
@@ -81,6 +86,11 @@ const SPEECH_MESSAGES = {
     ]
   },
   wolverine: {
+    egg: [
+      "Posso sentir as garras crescendo dentro desta casca, cara...",
+      "Até no ovo, os instintos selvagens estão despertos!",
+      "Este ovo tem o cheiro da natureza canadense..."
+    ],
     birth: [
       "E aí, garoto. Pronto para ver o que essas garras podem fazer?",
       "Sou o melhor no que faço, e isso é ser seu pet!",
@@ -411,9 +421,20 @@ export const usePetGame = (character: 'deadpool' | 'wolverine') => {
         const currentStageTime = EVOLUTION_TIMES[newState.evolutionStage];
         if (newState.age >= currentStageTime && newState.evolutionStage < EVOLUTION_TIMES.length - 1) {
           newState.evolutionStage++;
-          toast.success(`Evolução! Seu pet agora é ${['Bebê', 'Criança', 'Adolescente', 'Adulto', 'Veterano', 'Lendário', 'Mítico', 'Eterno'][newState.evolutionStage]}!`, {
-            duration: 5000,
-          });
+          
+          const stageNames = ['Ovo', 'Bebê', 'Criança', 'Adolescente', 'Adulto', 'Veterano', 'Lendário', 'Mítico', 'Eterno'];
+          const stageName = stageNames[newState.evolutionStage] || 'Desconhecido';
+          
+          if (newState.evolutionStage === 1) {
+            // Hatching from egg
+            toast.success(`🐣 Seu pet chocou! Bem-vindo, ${stageName}!`, {
+              duration: 5000,
+            });
+          } else {
+            toast.success(`✨ Evolução! Seu pet agora é ${stageName}!`, {
+              duration: 5000,
+            });
+          }
         }
         
         // Check if pet dies
