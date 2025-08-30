@@ -45,7 +45,7 @@ export const MiniGame = ({ onEnd, onUpdatePet, character, onStop }: MiniGameProp
     setFoodItems(prev => [...prev, newFood]);
     
     // Remove food after falling (adjust time based on speed)
-    const fallTime = 8000 / gameSpeed; // Base time divided by speed
+    const fallTime = 12000 / gameSpeed; // Slower base time (12 seconds)
     setTimeout(() => {
       setFoodItems(prev => prev.filter(food => food.id !== newFood.id));
     }, fallTime);
@@ -54,8 +54,8 @@ export const MiniGame = ({ onEnd, onUpdatePet, character, onStop }: MiniGameProp
   const catchFood = useCallback((foodId: number, x: number, y: number) => {
     setScore(prev => {
       const newScore = prev + 1;
-      // Increase speed every 3 hamburgers caught, max 3x speed
-      const newSpeed = Math.min(3, 1 + Math.floor(newScore / 3) * 0.3);
+      // Increase speed by 0.1x for each hamburger caught, max 2.5x speed
+      const newSpeed = Math.min(2.5, 1 + newScore * 0.1);
       setGameSpeed(newSpeed);
       return newScore;
     });
@@ -162,7 +162,7 @@ export const MiniGame = ({ onEnd, onUpdatePet, character, onStop }: MiniGameProp
             style={{
               left: food.x,
               top: food.y,
-              animation: `fallDown ${8 / food.speed}s linear forwards`
+              animation: `fallDown ${12 / food.speed}s linear forwards`
             }}
             onClick={() => catchFood(food.id, food.x, food.y)}
           >
