@@ -128,6 +128,24 @@ export default {
 					'66%': {
 						transform: 'translateY(-10px) rotate(-1deg)'
 					}
+				},
+				'fall': {
+					'0%': {
+						transform: 'translateY(-60px) rotate(0deg) scale(0.8)',
+						opacity: '1'
+					},
+					'10%': {
+						transform: 'translateY(-30px) rotate(36deg) scale(1)',
+						opacity: '1'
+					},
+					'90%': {
+						transform: 'translateY(400px) rotate(324deg) scale(1.1)',
+						opacity: '0.8'
+					},
+					'100%': {
+						transform: 'translateY(500px) rotate(360deg) scale(0.6)',
+						opacity: '0'
+					}
 				}
 			},
 			animation: {
@@ -136,7 +154,8 @@ export default {
 				'marvel-glow': 'marvel-glow 3s ease-in-out infinite',
 				'hero-bounce': 'hero-bounce 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite',
 				'energy-pulse': 'energy-pulse 4s ease-in-out infinite',
-				'float': 'float 6s ease-in-out infinite'
+				'float': 'float 6s ease-in-out infinite',
+				'fall': 'fall 6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
 			},
 			boxShadow: {
 				'marvel': 'var(--shadow-marvel)',

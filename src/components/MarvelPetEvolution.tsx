@@ -6,16 +6,36 @@ import { ActionButtons } from './ActionButtons';
 import { EvolutionProgress } from './EvolutionProgress';
 import { PetSpeech } from './PetSpeech';
 import { GameStats } from './GameStats';
+import { FloatingHearts } from './FloatingHearts';
+import { LaserGame } from './LaserGame';
+import { MiniGame } from './MiniGame';
 import { usePetGame } from '../hooks/usePetGame';
+import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
+import { usePerformanceMonitor } from '../hooks/usePerformanceMonitor';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export const MarvelPetEvolution = () => {
   const [selectedCharacter, setSelectedCharacter] = useState<'deadpool' | 'wolverine' | null>(null);
   const [gameStarted, setGameStarted] = useState(false);
+  const [showLaserGame, setShowLaserGame] = useState(false);
+  const [showMiniGame, setShowMiniGame] = useState(false);
+  const [showHearts, setShowHearts] = useState(false);
+  const [currentTab, setCurrentTab] = useState('game');
   
   const petGame = usePetGame(selectedCharacter!);
-  const { petState, actions, utils } = petGame;
+  const { petState, actions, laserGame, miniGame, utils } = petGame;
+  
+  // Keyboard shortcuts
+  useKeyboardShortcuts({
+    onFeed: actions.feedPet,
+    onPlay: actions.playWithPet,
+    onHeal: actions.healPet,
+    onSleep: actions.putPetToSleep,
+    onTrain: actions.trainPet,
+    onHome: () => setCurrentTab('game'),
+    isActive: gameStarted && petState.isAlive && !showLaserGame && !showMiniGame
+  });
 
   const handleCharacterSelection = (character: 'deadpool' | 'wolverine') => {
     setSelectedCharacter(character);
@@ -25,7 +45,47 @@ export const MarvelPetEvolution = () => {
   const handleRestart = () => {
     setSelectedCharacter(null);
     setGameStarted(false);
+    setShowLaserGame(false);
+    setShowMiniGame(false);
+    setShowHearts(false);
     utils.resetPet();
+  };
+
+  const handlePetClick = () => {
+    actions.clickPet();
+    setShowHearts(true);
+  };
+
+  const handleLaserGameStart = () => {
+    setShowLaserGame(true);
+  };
+
+  const handleLaserGameEnd = (score: number) => {
+    laserGame.updateLaserHighScore(score);
+    
+    const message = selectedCharacter === 'deadpool' ? 
+      `${score} points! Not bad for a human! Maximum effort!` : 
+      `${score} hits, bub. Your reflexes are getting sharper!`;
+    
+    utils.getRandomSpeech('happy');
+    setShowLaserGame(false);
+  };
+
+  const handleMiniGameStart = () => {
+    miniGame.startMiniGame();
+    setShowMiniGame(true);
+  };
+
+  const handleMiniGameEnd = (score: number) => {
+    let rating = 'Try Again';
+    if (score >= 20) rating = 'Amazing!';
+    else if (score >= 15) rating = 'Great!';
+    else if (score >= 10) rating = 'Good!';
+    else if (score >= 5) rating = 'Not Bad!';
+    
+    const message = `Caught ${score} items! ${rating} ${score > 15 ? 'Excellent reflexes!' : 'Keep practicing!'}`;
+    miniGame.updatePetFromMiniGame(score * 6, score * 4, score * 1.5);
+    setShowMiniGame(false);
   };
 
   const formatTime = (minutes: number): string => {
@@ -43,6 +103,26 @@ export const MarvelPetEvolution = () => {
     if (nextTime === Infinity) return 0;
     return Math.max(0, nextTime - petState.age);
   };
+
+  // Show games if active
+  if (showLaserGame) {
+    return (
+      <LaserGame
+        onEnd={handleLaserGameEnd}
+        onUpdatePet={laserGame.updatePetFromLaser}
+      />
+    );
+  }
+
+  if (showMiniGame) {
+    return (
+      <MiniGame
+        onEnd={handleMiniGameEnd}
+        onUpdatePet={miniGame.updatePetFromMiniGame}
+        character={selectedCharacter}
+      />
+    );
+  }
 
   if (!gameStarted || !selectedCharacter) {
     return <CharacterSelection onSelectCharacter={handleCharacterSelection} />;
@@ -112,14 +192,20 @@ export const MarvelPetEvolution = () => {
               />
             </div>
 
-            {/* Pet Display */}
-            <div className="flex justify-center">
-              <PetDisplay
-                character={selectedCharacter}
-                mood={petState.mood}
-                evolutionStage={petState.evolutionStage}
-                onClick={actions.clickPet}
-              />
+            {/* Pet Display with Floating Hearts */}
+            <div className="flex justify-center relative">
+              <div className="relative">
+                <PetDisplay
+                  character={selectedCharacter}
+                  mood={petState.mood}
+                  evolutionStage={petState.evolutionStage}
+                  onClick={handlePetClick}
+                />
+                <FloatingHearts 
+                  isActive={showHearts} 
+                  onAnimationComplete={() => setShowHearts(false)}
+                />
+              </div>
             </div>
 
             {/* Pet Speech */}

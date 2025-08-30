@@ -15,6 +15,9 @@ interface PetState {
   achievements: string[];
   mood: 'happy' | 'sad' | 'hungry' | 'sick' | 'sleeping' | 'normal';
   isAlive: boolean;
+  laserHighScore: number;
+  loneliness: number;
+  miniGameActive: boolean;
 }
 
 const INITIAL_STATE: PetState = {
@@ -30,14 +33,107 @@ const INITIAL_STATE: PetState = {
   totalClicks: 0,
   achievements: [],
   mood: 'normal',
-  isAlive: true
+  isAlive: true,
+  laserHighScore: 0,
+  loneliness: 0,
+  miniGameActive: false
 };
 
 const EVOLUTION_TIMES = [2, 8, 20, 50, 100, 200, 300, Infinity]; // minutes to next stage
 
+const SPEECH_MESSAGES = {
+  deadpool: {
+    birth: [
+      "Hey aí! Deadpool na área! Preparado para máximo esforço?",
+      "Quebrar a quarta parede nunca foi tão divertido!",
+      "Basicamente sou imortal, então vamos ter uma LONGA amizade!"
+    ],
+    happy: [
+      "Isso é melhor que chimichangas! Quase...",
+      "Você é o melhor parceiro que um mercenário poderia pedir!",
+      "Quebrando a quarta parede com estilo!",
+      "Máximo esforço em tudo que fazemos!"
+    ],
+    hungry: [
+      "Cadê minhas chimichangas?! EU PRECISO DE CHIMICHANGAS!",
+      "Um Deadpool faminto é um Deadpool perigoso...",
+      "Me alimente ou vou quebrar mais que a quarta parede!"
+    ],
+    sad: [
+      "Nem minha regeneração cura essa solidão...",
+      "Posso ser o Mercenário Tagarela, mas senti sua falta!",
+      "Onde você foi? Estava contando as melhores piadas!"
+    ],
+    sick: [
+      "Não se preocupe, me curo rápido! Mas um cuidado não faria mal...",
+      "Meu fator de cura está de férias aparentemente...",
+      "Até o Deadpool precisa de um kit médico às vezes!"
+    ],
+    sleeping: [
+      "Máximo esforço requer máximo descanso...",
+      "Até mercenários precisam de sua beleza do sono!",
+      "Hora de um cochilo antes de mais caos!"
+    ],
+    training: [
+      "Montagem de treino! Toca a música dos anos 80!",
+      "Ficando mais forte! Logo conseguirei levantar... coisas!",
+      "Treinamento de máximo esforço igual ganhos máximos!"
+    ]
+  },
+  wolverine: {
+    birth: [
+      "E aí, garoto. Pronto para ver o que essas garras podem fazer?",
+      "Sou o melhor no que faço, e isso é ser seu pet!",
+      "Bem-vindo à experiência X-Men, cara!"
+    ],
+    happy: [
+      "Isso é melhor que uma cerveja gelada após uma longa luta!",
+      "Você é legal, garoto. Me lembra dos bons tempos.",
+      "Meus instintos animais dizem que você é um dos bons!",
+      "Snikt! Esse é o som da felicidade, cara!"
+    ],
+    hungry: [
+      "Meu estômago está roncando mais alto que o Dentes-de-Sabre!",
+      "Eu toparia um bacon canadense agora...",
+      "Alimente a fera, ou encare as garras!"
+    ],
+    sad: [
+      "Até um mutante velho como eu fica solitário às vezes...",
+      "Você ficou fora tanto tempo, pensei que o Magneto te pegou...",
+      "A solidão corta mais fundo que adamantium..."
+    ],
+    sick: [
+      "Meu fator de cura não é mais o que era...",
+      "Já me senti melhor depois de lutar com o Hulk...",
+      "Ajude um velho X-Man, vai?"
+    ],
+    sleeping: [
+      "Esses ossos velhos precisam descansar...",
+      "Hora de hibernar como um wolverine de verdade...",
+      "Até mutantes precisam de seu tempo de inatividade..."
+    ],
+    training: [
+      "Hora de bater na Sala do Perigo!",
+      "Treinando duro, lutando mais duro!",
+      "Afiando essas garras e habilidades!"
+    ]
+  }
+};
+
 export const usePetGame = (character: 'deadpool' | 'wolverine') => {
   const [petState, setPetState] = useState<PetState>(INITIAL_STATE);
   const [lastUpdate, setLastUpdate] = useState(Date.now());
+
+  // Get random speech message
+  const getRandomSpeech = useCallback((mood: string): string => {
+    const messages = SPEECH_MESSAGES[character]?.[mood as keyof typeof SPEECH_MESSAGES.deadpool];
+    if (messages && messages.length > 0) {
+      return messages[Math.floor(Math.random() * messages.length)];
+    }
+    return character === 'deadpool' 
+      ? "Máximo esforço sempre!" 
+      : "Sou o melhor no que faço, cara!";
+  }, [character]);
 
   // Calculate evolution progress
   const getEvolutionProgress = useCallback(() => {
@@ -115,88 +211,179 @@ export const usePetGame = (character: 'deadpool' | 'wolverine') => {
     });
   }, []);
 
-  // Game actions
+  // Enhanced actions with exact same functionality as original
   const feedPet = useCallback(() => {
     if (!petState.isAlive) return;
     
     setPetState(prev => ({
       ...prev,
-      hunger: Math.min(100, prev.hunger + 25),
-      happiness: Math.min(100, prev.happiness + 5),
+      hunger: Math.min(100, prev.hunger + 35),
+      happiness: Math.min(100, prev.happiness + 12),
+      loneliness: Math.max(0, prev.loneliness - 15),
+      totalClicks: prev.totalClicks + 1
+    }));
+    
+    addXP(6);
+    
+    const message = character === 'deadpool' ? 
+      "Mmm! Better than Aunt May's wheat cakes!" : 
+      "Thanks, bub. That hit the spot!";
+    
+    toast.success(message, { duration: 2000 });
+  }, [petState.isAlive, addXP, character]);
+
+  const playWithPet = useCallback(() => {
+    if (!petState.isAlive || petState.energy < 15) {
+      if (petState.energy < 15) {
+        toast.info("I'm too tired to play right now...");
+      }
+      return;
+    }
+    
+    setPetState(prev => ({
+      ...prev,
+      happiness: Math.min(100, prev.happiness + 28),
+      energy: Math.max(0, prev.energy - 15),
+      loneliness: Math.max(0, prev.loneliness - 25),
       totalClicks: prev.totalClicks + 1
     }));
     
     addXP(10);
-    toast.success('Pet alimentado! 🍔');
-  }, [petState.isAlive, addXP]);
-
-  const playWithPet = useCallback(() => {
-    if (!petState.isAlive) return;
-    
-    setPetState(prev => ({
-      ...prev,
-      happiness: Math.min(100, prev.happiness + 20),
-      energy: Math.max(0, prev.energy - 10),
-      totalClicks: prev.totalClicks + 1
-    }));
-    
-    addXP(15);
-    toast.success('Pet está se divertindo! 🎮');
-  }, [petState.isAlive, addXP]);
+    toast.success(getRandomSpeech('happy'), { duration: 2000 });
+  }, [petState.isAlive, petState.energy, addXP, getRandomSpeech]);
 
   const healPet = useCallback(() => {
     if (!petState.isAlive) return;
     
     setPetState(prev => ({
       ...prev,
-      health: Math.min(100, prev.health + 30),
-      happiness: Math.min(100, prev.happiness + 10),
+      health: Math.min(100, prev.health + 45),
+      energy: Math.min(100, prev.energy + 25),
       totalClicks: prev.totalClicks + 1
     }));
     
-    addXP(20);
-    toast.success('Pet curado! 💊');
-  }, [petState.isAlive, addXP]);
+    addXP(4);
+    
+    const message = character === 'deadpool' ? 
+      "My healing factor is back online!" : 
+      "Feeling like I could take on Sabretooth again!";
+    
+    toast.success(message, { duration: 2000 });
+  }, [petState.isAlive, addXP, character]);
 
   const putPetToSleep = useCallback(() => {
     if (!petState.isAlive) return;
     
     setPetState(prev => ({
       ...prev,
-      energy: Math.min(100, prev.energy + 30),
-      happiness: Math.min(100, prev.happiness + 5),
+      energy: Math.min(100, prev.energy + 55),
+      health: Math.min(100, prev.health + 18),
+      happiness: Math.min(100, prev.happiness + 8),
       totalClicks: prev.totalClicks + 1
     }));
     
-    addXP(8);
-    toast.success('Pet está descansando! 😴');
-  }, [petState.isAlive, addXP]);
+    addXP(3);
+    toast.success(getRandomSpeech('sleeping'), { duration: 2000 });
+  }, [petState.isAlive, addXP, getRandomSpeech]);
 
   const trainPet = useCallback(() => {
+    if (!petState.isAlive || petState.energy < 25) {
+      if (petState.energy < 25) {
+        toast.info("I need more energy to train!");
+      }
+      return;
+    }
+    
+    setPetState(prev => ({
+      ...prev,
+      energy: Math.max(0, prev.energy - 25),
+      happiness: Math.min(100, prev.happiness + 18),
+      totalClicks: prev.totalClicks + 1
+    }));
+    
+    addXP(15);
+    toast.success(getRandomSpeech('training'), { duration: 2000 });
+  }, [petState.isAlive, petState.energy, addXP, getRandomSpeech]);
+
+  const giveTreat = useCallback(() => {
     if (!petState.isAlive) return;
     
     setPetState(prev => ({
       ...prev,
-      energy: Math.max(0, prev.energy - 15),
-      happiness: Math.min(100, prev.happiness + 10),
+      happiness: Math.min(100, prev.happiness + 22),
+      hunger: Math.min(100, prev.hunger + 18),
+      loneliness: Math.max(0, prev.loneliness - 18),
       totalClicks: prev.totalClicks + 1
     }));
     
-    addXP(25);
-    toast.success('Pet está treinando! 💪');
-  }, [petState.isAlive, addXP]);
+    addXP(7);
+    
+    const message = character === 'deadpool' ? 
+      "Sweet! Almost as good as a chimichanga!" : 
+      "Not bad, kid. Got any more of these?";
+    
+    toast.success(message, { duration: 2000 });
+  }, [petState.isAlive, addXP, character]);
 
   const clickPet = useCallback(() => {
     if (!petState.isAlive) return;
     
     setPetState(prev => ({
       ...prev,
-      happiness: Math.min(100, prev.happiness + 2),
+      happiness: Math.min(100, prev.happiness + 6),
+      loneliness: Math.max(0, prev.loneliness - 8),
       totalClicks: prev.totalClicks + 1
     }));
     
-    addXP(1);
+    addXP(2);
   }, [petState.isAlive, addXP]);
+
+  // Laser game integration
+  const updatePetFromLaser = useCallback((happiness: number, energy: number, xp: number) => {
+    setPetState(prev => ({
+      ...prev,
+      happiness: Math.min(100, prev.happiness + happiness),
+      energy: Math.max(0, prev.energy + energy)
+    }));
+    addXP(xp);
+  }, [addXP]);
+
+  const updateLaserHighScore = useCallback((score: number) => {
+    setPetState(prev => {
+      const newScore = Math.max(prev.laserHighScore, score);
+      if (newScore > prev.laserHighScore) {
+        toast.success('New High Score!', { duration: 3000 });
+        
+        // Add achievement
+        const newAchievements = [...prev.achievements];
+        if (!newAchievements.includes('Laser Master')) {
+          newAchievements.push('Laser Master');
+        }
+        
+        return {
+          ...prev,
+          laserHighScore: newScore,
+          achievements: newAchievements
+        };
+      }
+      return prev;
+    });
+  }, []);
+
+  // Mini game integration  
+  const updatePetFromMiniGame = useCallback((hunger: number, happiness: number, xp: number) => {
+    setPetState(prev => ({
+      ...prev,
+      hunger: Math.min(100, prev.hunger + hunger),
+      happiness: Math.min(100, prev.happiness + happiness),
+      miniGameActive: false
+    }));
+    addXP(xp);
+  }, [addXP]);
+
+  const startMiniGame = useCallback(() => {
+    setPetState(prev => ({ ...prev, miniGameActive: true }));
+  }, []);
 
   // Main game loop
   useEffect(() => {
@@ -268,11 +455,21 @@ export const usePetGame = (character: 'deadpool' | 'wolverine') => {
       healPet,
       putPetToSleep,
       trainPet,
-      clickPet
+      clickPet,
+      giveTreat
+    },
+    laserGame: {
+      updatePetFromLaser,
+      updateLaserHighScore
+    },
+    miniGame: {
+      updatePetFromMiniGame,
+      startMiniGame
     },
     utils: {
       getEvolutionProgress,
-      resetPet: () => setPetState(INITIAL_STATE)
+      resetPet: () => setPetState(INITIAL_STATE),
+      getRandomSpeech
     }
   };
 };
