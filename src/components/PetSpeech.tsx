@@ -86,7 +86,7 @@ const SPEECH_MESSAGES = {
 };
 
 export const PetSpeech = ({ character, mood, message }: PetSpeechProps) => {
-  const [currentMessage, setCurrentMessage] = useState('');
+  const [currentMessage, setCurrentMessage] = useState('Olá! Pronto para me ver crescer?');
 
   useEffect(() => {
     if (message) {
@@ -105,26 +105,9 @@ export const PetSpeech = ({ character, mood, message }: PetSpeechProps) => {
     }
   }, [character, mood, message]);
 
-  if (!currentMessage) return null;
-
   return (
-    <div className="relative bg-card/80 backdrop-blur-lg border border-border rounded-2xl p-6 max-w-md mx-auto shadow-marvel animate-hero-bounce">
-      <div className="flex items-start gap-4">
-        <div className={`text-3xl animate-energy-pulse ${
-          character === 'deadpool' ? 'text-deadpool-red' : 'text-wolverine-yellow'
-        }`}>
-          {character === 'deadpool' ? '💀' : '⚔️'}
-        </div>
-        <div className="flex-1">
-          <p className="text-foreground leading-relaxed font-medium">
-            {currentMessage}
-          </p>
-        </div>
-      </div>
-      
-      {/* Speech bubble tail */}
-      <div className="absolute bottom-[-10px] left-8 w-0 h-0 border-l-[15px] border-l-transparent border-r-[15px] border-r-transparent border-t-[15px] border-t-border" />
-      <div className="absolute bottom-[-8px] left-9 w-0 h-0 border-l-[13px] border-l-transparent border-r-[13px] border-r-transparent border-t-[13px] border-t-card" />
+    <div className="speech-bubble mb-6 max-w-md mt-6">
+      {currentMessage}
     </div>
   );
 };

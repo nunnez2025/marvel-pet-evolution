@@ -10,6 +10,8 @@ import { FloatingHearts } from './FloatingHearts';
 import { LaserGame } from './LaserGame';
 import { MiniGame } from './MiniGame';
 import { AchievementNotification } from './AchievementNotification';
+import { EmotionFace } from './EmotionFace';
+import { StatusText } from './StatusText';
 import { usePetGame } from '../hooks/usePetGame';
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
 import { usePerformanceMonitor } from '../hooks/usePerformanceMonitor';
@@ -22,6 +24,7 @@ export const MarvelPetEvolution = () => {
   const [showLaserGame, setShowLaserGame] = useState(false);
   const [showMiniGame, setShowMiniGame] = useState(false);
   const [showHearts, setShowHearts] = useState(false);
+  const [showEmotion, setShowEmotion] = useState(false);
   const [currentTab, setCurrentTab] = useState('game');
   const [currentAchievement, setCurrentAchievement] = useState<{ title: string; icon: string } | null>(null);
   const [lastAchievementCount, setLastAchievementCount] = useState(0);
@@ -82,6 +85,12 @@ export const MarvelPetEvolution = () => {
   const handlePetClick = () => {
     actions.clickPet();
     setShowHearts(true);
+    setShowEmotion(true);
+    
+    // Reset emotion after animation
+    setTimeout(() => {
+      setShowEmotion(false);
+    }, 2000);
   };
 
   const handleLaserGameStart = () => {
@@ -224,9 +233,9 @@ export const MarvelPetEvolution = () => {
               />
             </div>
 
-            {/* Pet Display with Floating Hearts */}
+            {/* Pet Display with Floating Hearts and Emotion */}
             <div className="flex justify-center relative">
-              <div className="relative">
+              <div className="relative w-64 h-64 mx-auto rounded-full overflow-hidden flex items-center justify-center">
                 <AdvancedPetDisplay
                   character={selectedCharacter}
                   mood={petState.mood}
@@ -238,7 +247,16 @@ export const MarvelPetEvolution = () => {
                   isActive={showHearts} 
                   onAnimationComplete={() => setShowHearts(false)}
                 />
+                <EmotionFace 
+                  mood={petState.mood} 
+                  trigger={showEmotion}
+                />
               </div>
+            </div>
+
+            {/* Status Text */}
+            <div className="flex justify-center">
+              <StatusText mood={petState.mood} />
             </div>
 
             {/* Pet Speech */}

@@ -1,5 +1,3 @@
-import { Button } from "@/components/ui/button";
-
 interface ActionButtonsProps {
   onFeed: () => void;
   onPlay: () => void;
@@ -26,79 +24,86 @@ export const ActionButtons = ({
   return (
     <div className="space-y-4">
       {/* Primary Actions */}
-      <div className="flex flex-wrap gap-3 justify-center max-w-lg">
-        <Button
-          onClick={onFeed}
+      <div className="flex gap-4 flex-wrap justify-center mb-4">
+        <button 
+          onClick={onFeed} 
           disabled={disabled}
-          className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-marvel transition-all duration-300 hover:scale-105 hover:shadow-glow"
+          className="action-button-enhanced feed-btn gpu-accelerated"
+          style={{ '--color-1': '#3b82f6', '--color-2': '#1d4ed8' } as React.CSSProperties}
         >
           🍔 Alimentar
-        </Button>
-
-        <Button
-          onClick={onPlay}
+        </button>
+        
+        <button 
+          onClick={onPlay} 
           disabled={disabled}
-          className="bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-marvel transition-all duration-300 hover:scale-105 hover:shadow-glow"
+          className="action-button-enhanced play-btn gpu-accelerated"
+          style={{ '--color-1': '#10b981', '--color-2': '#047857' } as React.CSSProperties}
         >
           🎮 Brincar
-        </Button>
-
-        <Button
-          onClick={onHeal}
+        </button>
+        
+        <button 
+          onClick={onHeal} 
           disabled={disabled}
-          variant="outline"
-          className="border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground transition-all duration-300 hover:scale-105"
+          className="action-button-enhanced heal-btn gpu-accelerated"
+          style={{ '--color-1': '#ef4444', '--color-2': '#dc2626' } as React.CSSProperties}
         >
           💊 Curar
-        </Button>
-
-        <Button
-          onClick={onSleep}
+        </button>
+        
+        <button 
+          onClick={onSleep} 
           disabled={disabled}
-          className="bg-muted hover:bg-muted/80 text-muted-foreground transition-all duration-300 hover:scale-105"
+          className="action-button-enhanced sleep-btn gpu-accelerated"
+          style={{ '--color-1': '#8b5cf6', '--color-2': '#7c3aed' } as React.CSSProperties}
         >
           😴 Dormir
-        </Button>
-
-        <Button
-          onClick={onTrain}
-          disabled={disabled}
-          className="bg-accent hover:bg-accent/90 text-accent-foreground shadow-marvel transition-all duration-300 hover:scale-105 hover:shadow-glow"
-        >
-          💪 Treinar
-        </Button>
+        </button>
+        
+        {onLaserGame && (
+          <button 
+            onClick={onLaserGame} 
+            disabled={disabled}
+            className="action-button-enhanced laser-btn gpu-accelerated"
+            style={{ '--color-1': '#f97316', '--color-2': '#ea580c' } as React.CSSProperties}
+          >
+            🔴 Laser
+          </button>
+        )}
       </div>
 
       {/* Secondary Actions */}
-      <div className="flex flex-wrap gap-3 justify-center max-w-lg">
-        {onTreat && (
-          <Button
-            onClick={onTreat}
+      <div className="flex gap-4 flex-wrap justify-center">
+        {onMiniGame && (
+          <button 
+            onClick={onMiniGame} 
             disabled={disabled}
-            className="bg-green-600 hover:bg-green-700 text-white transition-all duration-300 hover:scale-105"
+            className="action-button-enhanced gpu-accelerated" 
+            style={{ '--color-1': '#ec4899', '--color-2': '#be185d' } as React.CSSProperties}
+          >
+            🎯 Minijogo
+          </button>
+        )}
+        
+        <button 
+          onClick={onTrain} 
+          disabled={disabled}
+          className="action-button-enhanced gpu-accelerated" 
+          style={{ '--color-1': '#06b6d4', '--color-2': '#0891b2' } as React.CSSProperties}
+        >
+          💪 Treinamento
+        </button>
+        
+        {onTreat && (
+          <button 
+            onClick={onTreat} 
+            disabled={disabled}
+            className="action-button-enhanced gpu-accelerated" 
+            style={{ '--color-1': '#84cc16', '--color-2': '#65a30d' } as React.CSSProperties}
           >
             🍬 Petisco
-          </Button>
-        )}
-
-        {onLaserGame && (
-          <Button
-            onClick={onLaserGame}
-            disabled={disabled}
-            className="bg-red-600 hover:bg-red-700 text-white transition-all duration-300 hover:scale-105"
-          >
-            🔴 Laser Game
-          </Button>
-        )}
-
-        {onMiniGame && (
-          <Button
-            onClick={onMiniGame}
-            disabled={disabled}
-            className="bg-purple-600 hover:bg-purple-700 text-white transition-all duration-300 hover:scale-105"
-          >
-            🎯 Food Rain
-          </Button>
+          </button>
         )}
       </div>
     </div>
