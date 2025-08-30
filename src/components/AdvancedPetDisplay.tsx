@@ -877,34 +877,43 @@ export const AdvancedPetDisplay = ({
       >
         {renderCurrentStage()}
         
-        {/* Stage Name */}
-        <div className="absolute bottom-4 left-4 bg-black/50 backdrop-blur-sm px-3 py-1 rounded-full text-white text-sm font-bold">
-          {currentStage.name}
-        </div>
-        
-        {/* Age Display */}
-        <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm px-3 py-1 rounded-full text-white text-xs">
-          {Math.floor(age)}h
-        </div>
+        {/* Remove internal text elements - moved outside container */}
       </div>
       
-      {/* Evolution Sparkles */}
+      {/* Stage Name - moved outside pet container */}
+      <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 bg-background/90 backdrop-blur-sm px-3 py-1 rounded-full text-foreground text-xs font-bold whitespace-nowrap border border-border/50">
+        {currentStage.name}
+      </div>
+      
+      {/* Age Display - moved to top outside pet */}
+      <div className="absolute -top-6 right-2 bg-background/90 backdrop-blur-sm px-2 py-1 rounded-full text-foreground text-xs border border-border/50">
+        {Math.floor(age)}h
+      </div>
+      
+      {/* Evolution Sparkles - repositioned around pet */}
       {showEvolutionEffect && (
         <div className="absolute inset-0 pointer-events-none">
-          {[...Array(8)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute text-2xl animate-float"
-              style={{
-                left: `${20 + (i % 4) * 20}%`,
-                top: `${30 + Math.floor(i / 4) * 40}%`,
-                animationDelay: `${i * 0.1}s`,
-                animationDuration: '2s'
-              }}
-            >
-              ✨
-            </div>
-          ))}
+          {[...Array(6)].map((_, i) => {
+            const angle = (i * 60) * Math.PI / 180;
+            const radius = 140;
+            const x = 50 + (radius / 2) * Math.cos(angle);
+            const y = 50 + (radius / 2) * Math.sin(angle);
+            return (
+              <div
+                key={i}
+                className="absolute text-2xl animate-float z-30"
+                style={{
+                  left: `${x}%`,
+                  top: `${y}%`,
+                  transform: 'translate(-50%, -50%)',
+                  animationDelay: `${i * 0.15}s`,
+                  animationDuration: '2s'
+                }}
+              >
+                ✨
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

@@ -254,20 +254,27 @@ export const MarvelPetEvolution = () => {
               />
             </div>
 
-            {/* Pet Display with Floating Hearts and Emotion */}
-            <div className="flex justify-center relative">
-              <div className="relative w-64 h-64 mx-auto rounded-full overflow-hidden flex items-center justify-center">
-                <AdvancedPetDisplay
-                  character={selectedCharacter}
-                  mood={petState.mood}
-                  evolutionStage={petState.evolutionStage}
-                  age={petState.age}
-                  onClick={handlePetClick}
-                />
+            {/* Pet Display with organized animations */}
+            <div className="flex justify-center relative mb-8">
+              <div className="relative w-64 h-64 mx-auto">
+                {/* Main pet container with circular boundary */}
+                <div className="relative w-full h-full rounded-full overflow-hidden flex items-center justify-center z-10">
+                  <AdvancedPetDisplay
+                    character={selectedCharacter}
+                    mood={petState.mood}
+                    evolutionStage={petState.evolutionStage}
+                    age={petState.age}
+                    onClick={handlePetClick}
+                  />
+                </div>
+                
+                {/* Floating hearts positioned around pet, not on top */}
                 <FloatingHearts 
                   isActive={showHearts} 
                   onAnimationComplete={() => setShowHearts(false)}
                 />
+                
+                {/* Emotion face positioned above pet */}
                 <EmotionFace 
                   mood={petState.mood} 
                   trigger={showEmotion}

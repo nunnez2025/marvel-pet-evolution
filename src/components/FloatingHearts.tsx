@@ -36,21 +36,29 @@ export const FloatingHearts = ({ isActive, onAnimationComplete }: FloatingHearts
 
   return (
     <div className="absolute inset-0 pointer-events-none z-20">
-      {hearts.map((heart) => (
-        <div
-          key={heart.id}
-          className="absolute text-4xl animate-float"
-          style={{
-            left: `${45 + Math.random() * 10}%`,
-            top: `${45 + Math.random() * 10}%`,
-            animationDelay: `${heart.delay}ms`,
-            animationDuration: '3.5s',
-            animationFillMode: 'forwards'
-          }}
-        >
-          {heart.emoji}
-        </div>
-      ))}
+      {hearts.map((heart, index) => {
+        // Position hearts around the pet in a circle pattern, avoiding the center
+        const angle = (index * 120) + Math.random() * 60; // Spread hearts around
+        const radius = 40 + Math.random() * 15; // Distance from center
+        const x = 50 + radius * Math.cos(angle * Math.PI / 180);
+        const y = 50 + radius * Math.sin(angle * Math.PI / 180);
+        
+        return (
+          <div
+            key={heart.id}
+            className="absolute text-3xl animate-float"
+            style={{
+              left: `${Math.max(5, Math.min(95, x))}%`,
+              top: `${Math.max(5, Math.min(95, y))}%`,
+              animationDelay: `${heart.delay}ms`,
+              animationDuration: '3.5s',
+              animationFillMode: 'forwards'
+            }}
+          >
+            {heart.emoji}
+          </div>
+        );
+      })}
     </div>
   );
 };
