@@ -5,7 +5,6 @@ interface ActionButtonsProps {
   onSleep: () => void;
   onTrain: () => void;
   onLaserGame?: () => void;
-  onMiniGame?: () => void;
   onTreat?: () => void;
   disabled?: boolean;
 }
@@ -17,7 +16,6 @@ export const ActionButtons = ({
   onSleep, 
   onTrain, 
   onLaserGame,
-  onMiniGame,
   onTreat,
   disabled = false 
 }: ActionButtonsProps) => {
@@ -75,17 +73,6 @@ export const ActionButtons = ({
 
       {/* Secondary Actions */}
       <div className="flex gap-4 flex-wrap justify-center">
-        {onMiniGame && (
-          <button 
-            onClick={onMiniGame} 
-            disabled={disabled}
-            className="action-button-enhanced gpu-accelerated" 
-            style={{ '--color-1': '#ec4899', '--color-2': '#be185d' } as React.CSSProperties}
-          >
-            🎯 Minijogo
-          </button>
-        )}
-        
         <button 
           onClick={onTrain} 
           disabled={disabled}

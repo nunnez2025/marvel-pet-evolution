@@ -8,7 +8,6 @@ import { PetSpeech } from './PetSpeech';
 import { GameStats } from './GameStats';
 import { FloatingHearts } from './FloatingHearts';
 import { LaserGame } from './LaserGame';
-import { MiniGame } from './MiniGame';
 import { AchievementNotification } from './AchievementNotification';
 import { PetStatusDisplay } from './PetStatusDisplay';
 import { EmotionFace } from './EmotionFace';
@@ -25,7 +24,6 @@ export const MarvelPetEvolution = () => {
   const [gameStarted, setGameStarted] = useState(false);
   const [showBonusPet, setShowBonusPet] = useState(false);
   const [showLaserGame, setShowLaserGame] = useState(false);
-  const [showMiniGame, setShowMiniGame] = useState(false);
   const [showHearts, setShowHearts] = useState(false);
   const [showEmotion, setShowEmotion] = useState(false);
   const [currentTab, setCurrentTab] = useState('game');
@@ -33,7 +31,7 @@ export const MarvelPetEvolution = () => {
   const [lastAchievementCount, setLastAchievementCount] = useState(0);
   
   const petGame = usePetGame(selectedCharacter!);
-  const { petState, actions, laserGame, miniGame, utils } = petGame;
+  const { petState, actions, laserGame, utils } = petGame;
   
   // Performance monitoring
   usePerformanceMonitor();
@@ -66,7 +64,7 @@ export const MarvelPetEvolution = () => {
     onSleep: actions.putPetToSleep,
     onTrain: actions.trainPet,
     onHome: () => setCurrentTab('game'),
-    isActive: gameStarted && petState.isAlive && !showLaserGame && !showMiniGame
+    isActive: gameStarted && petState.isAlive && !showLaserGame
   });
 
   const handleCharacterSelection = (character: 'deadpool' | 'wolverine') => {
@@ -87,7 +85,6 @@ export const MarvelPetEvolution = () => {
     setGameStarted(false);
     setShowBonusPet(false);
     setShowLaserGame(false);
-    setShowMiniGame(false);
     setShowHearts(false);
     setCurrentAchievement(null);
     setLastAchievementCount(0);
@@ -119,23 +116,6 @@ export const MarvelPetEvolution = () => {
     setShowLaserGame(false);
   };
 
-  const handleMiniGameStart = () => {
-    miniGame.startMiniGame();
-    setShowMiniGame(true);
-  };
-
-  const handleMiniGameEnd = (score: number) => {
-    setShowMiniGame(false);
-    // Simple score feedback  
-    const bonusHunger = Math.min(score * 2, 20);
-    const bonusHappiness = Math.min(score * 3, 30); 
-    miniGame.updatePetFromMiniGame(bonusHunger, bonusHappiness, score);
-  };
-
-  const handleMiniGameStop = () => {
-    setShowMiniGame(false);
-  };
-
   const formatTime = (minutes: number): string => {
     const hours = Math.floor(minutes / 60);
     const mins = Math.round(minutes % 60);
@@ -163,20 +143,6 @@ export const MarvelPetEvolution = () => {
       <LaserGame
         onEnd={handleLaserGameEnd}
         onUpdatePet={laserGame.updatePetFromLaser}
-      />
-    );
-  }
-
-  if (showMiniGame) {
-    return (
-      <MiniGame
-        character={selectedCharacter}
-        onEnd={handleMiniGameEnd}
-        onStop={handleMiniGameStop}
-        onUpdatePet={(hunger, happiness, xp) => {
-          // Use miniGame methods to update pet stats
-          miniGame.updatePetFromMiniGame(hunger, happiness, xp);
-        }}
       />
     );
   }
@@ -321,7 +287,6 @@ export const MarvelPetEvolution = () => {
                 onTrain={actions.trainPet}
                 onTreat={actions.giveTreat}
                 onLaserGame={handleLaserGameStart}
-                onMiniGame={handleMiniGameStart}
               />
             </div>
           </TabsContent>

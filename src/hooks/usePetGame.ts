@@ -17,7 +17,6 @@ interface PetState {
   isAlive: boolean;
   laserHighScore: number;
   loneliness: number;
-  miniGameActive: boolean;
 }
 
 const INITIAL_STATE: PetState = {
@@ -35,8 +34,7 @@ const INITIAL_STATE: PetState = {
   mood: 'normal',
   isAlive: true,
   laserHighScore: 0,
-  loneliness: 0,
-  miniGameActive: false
+  loneliness: 0
 };
 
 const EVOLUTION_TIMES = [1, 4, 12, 30, 60, 120, 240, 480, Infinity]; // minutes to next stage (ovo, bebê, criança, teen, adulto, veterano, lendário, mítico, eterno)
@@ -380,21 +378,6 @@ export const usePetGame = (character: 'deadpool' | 'wolverine') => {
     });
   }, []);
 
-  // Mini game integration  
-  const updatePetFromMiniGame = useCallback((hunger: number, happiness: number, xp: number) => {
-    setPetState(prev => ({
-      ...prev,
-      hunger: Math.min(100, prev.hunger + hunger),
-      happiness: Math.min(100, prev.happiness + happiness),
-      miniGameActive: false
-    }));
-    addXP(xp);
-  }, [addXP]);
-
-  const startMiniGame = useCallback(() => {
-    setPetState(prev => ({ ...prev, miniGameActive: true }));
-  }, []);
-
   // Main game loop
   useEffect(() => {
     const interval = setInterval(() => {
@@ -482,10 +465,6 @@ export const usePetGame = (character: 'deadpool' | 'wolverine') => {
     laserGame: {
       updatePetFromLaser,
       updateLaserHighScore
-    },
-    miniGame: {
-      updatePetFromMiniGame,
-      startMiniGame
     },
     utils: {
       getEvolutionProgress,
