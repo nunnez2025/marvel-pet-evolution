@@ -52,44 +52,35 @@ export const CharacterSelection = ({ onSelectCharacter, onSelectBonus }: Charact
           <p>🏆 Sistema de conquistas desbloqueáveis</p>
         </div>
 
-        {/* Botão Bônus - Flutuante e em destaque */}
-        <div className="fixed bottom-8 right-8 z-50">
+        {/* Botão Bônus - Pequeno e brilhante embaixo da seleção */}
+        <div className="mt-8 flex justify-center">
           <div className="relative">
             {/* Glow effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full blur-xl opacity-60 animate-pulse scale-110"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full blur-md opacity-50 animate-pulse"></div>
             
             {/* Main button */}
-            <Button
+            <button
               onClick={onSelectBonus}
-              size="lg"
-              className="relative bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 border-2 border-amber-300 text-white font-bold shadow-2xl hover:shadow-amber-500/50 transition-all duration-300 animate-bounce hover:animate-none hover:scale-105 rounded-full px-6 py-4"
+              className="relative bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-bold shadow-lg hover:shadow-amber-500/50 transition-all duration-300 hover:scale-110 rounded-full px-4 py-2 text-sm border-2 border-amber-300/50"
             >
-              <span className="relative z-10 flex items-center gap-2 text-lg">
-                🎮 Pet Bônus
+              <span className="relative z-10 flex items-center gap-2">
+                ⭐ Pet Bônus
               </span>
               
               {/* Shimmer effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-1000 rounded-full" />
-            </Button>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-700 rounded-full" />
+            </button>
             
-            {/* Floating sparkles around the button */}
-            <div className="absolute -top-2 -left-2 text-yellow-300 animate-ping" style={{ animationDelay: '0s' }}>✨</div>
-            <div className="absolute -top-3 -right-3 text-amber-300 animate-ping" style={{ animationDelay: '0.5s' }}>⭐</div>
-            <div className="absolute -bottom-2 -left-3 text-yellow-400 animate-ping" style={{ animationDelay: '1s' }}>💫</div>
-            <div className="absolute -bottom-3 -right-2 text-amber-400 animate-ping" style={{ animationDelay: '1.5s' }}>✨</div>
-            
-            {/* Pulse rings */}
-            <div className="absolute inset-0 rounded-full border-2 border-amber-300/50 animate-ping" style={{ animationDelay: '0.2s' }}></div>
-            <div className="absolute inset-0 rounded-full border-2 border-yellow-300/30 animate-ping scale-125" style={{ animationDelay: '0.8s' }}></div>
-          </div>
-          
-          {/* Tooltip */}
-          <div className="absolute bottom-full right-0 mb-2 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-            <div className="bg-black/80 text-white text-xs rounded-lg px-3 py-2 whitespace-nowrap">
-              🎮 Pet Virtual Clássico
-            </div>
+            {/* Small floating sparkles */}
+            <div className="absolute -top-1 -left-1 text-yellow-300 text-xs animate-ping" style={{ animationDelay: '0s' }}>✨</div>
+            <div className="absolute -top-1 -right-1 text-amber-300 text-xs animate-ping" style={{ animationDelay: '0.7s' }}>⭐</div>
+            <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 text-yellow-400 text-xs animate-ping" style={{ animationDelay: '1.4s' }}>💫</div>
           </div>
         </div>
+
+        <p className="text-amber-400/70 text-xs mt-2 text-center animate-pulse">
+          🎮 Pet virtual clássico com mecânicas tradicionais
+        </p>
       </div>
     </div>
   );
